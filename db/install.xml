@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/scheduled_backup_cloud/db" VERSION="2026050600" COMMENT="XMLDB for local_scheduled_backup_cloud"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="local_scheduled_backup_cloud_log" COMMENT="Historial de subidas y omisiones">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="mdl_course.id or 0"/>
+        <FIELD NAME="courseshortname" TYPE="char" LENGTH="255" NOTNULL="true"/>
+        <FIELD NAME="originalfilename" TYPE="char" LENGTH="500" NOTNULL="true"/>
+        <FIELD NAME="remotefilename" TYPE="char" LENGTH="500" NOTNULL="true"/>
+        <FIELD NAME="filehash" TYPE="char" LENGTH="40" NOTNULL="true"/>
+        <FIELD NAME="filesize" TYPE="int" LENGTH="18" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="unknown"/>
+        <FIELD NAME="timerun" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timeuploaded" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="remotepath" TYPE="char" LENGTH="1333" NOTNULL="true"/>
+        <FIELD NAME="errormessage" TYPE="text" NOTNULL="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="timerun_ix" UNIQUE="false" FIELDS="timerun"/>
+        <INDEX NAME="courseid_ix" UNIQUE="false" FIELDS="courseid"/>
+        <INDEX NAME="status_ix" UNIQUE="false" FIELDS="status"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
