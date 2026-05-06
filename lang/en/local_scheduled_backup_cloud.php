@@ -29,11 +29,11 @@ $string['oauth_not_connected'] = 'Not connected. Save client ID and secret, then
 $string['tokens_encrypted'] = 'Stored tokens (encrypted)';
 $string['tokens_encrypted_desc'] = 'Leave blank unless restoring from backup. Connection writes here automatically.';
 
-$string['automated_cloud_section_heading'] = 'Cloud upload (this plugin)';
+$string['automated_cloud_section_heading'] = 'Cloud upload';
 $string['automated_cloud_section_desc'] = 'OAuth, remote folders, and upload options are on the linked page. The controls above are core Scheduled backup only.';
 $string['automated_cloud_open_settings'] = 'Open cloud upload settings';
 
-$string['cloud_heading'] = 'Cloud upload (this plugin)';
+$string['cloud_heading'] = 'Cloud upload';
 $string['cloud_heading_desc'] = 'Enable the upload task, choose provider and OAuth. This does not create .mbz files — core cron generates them in the «Save to» folder above; this task picks them up in stable order (by file time), uploads one file, then moves on.';
 
 $string['paths_heading'] = 'Cloud paths and naming';

@@ -29,11 +29,11 @@ $string['oauth_not_connected'] = 'Sin conexión. Guarde ID y secreto y pulse «C
 $string['tokens_encrypted'] = 'Tokens almacenados (cifrados)';
 $string['tokens_encrypted_desc'] = 'Déjelo vacío salvo restauración desde copia. La conexión escribe aquí automáticamente.';
 
-$string['automated_cloud_section_heading'] = 'Subida a la nube (este plugin)';
+$string['automated_cloud_section_heading'] = 'Subida a la nube';
 $string['automated_cloud_section_desc'] = 'OAuth, carpetas en la nube y opciones de subida están en la página enlazada. Los controles anteriores son solo la copia de seguridad programada del núcleo.';
 $string['automated_cloud_open_settings'] = 'Abrir ajustes de subida a la nube';
 
-$string['cloud_heading'] = 'Subida a la nube (este plugin)';
+$string['cloud_heading'] = 'Subida a la nube';
 $string['cloud_heading_desc'] = 'Active la tarea de subida, elija proveedor y OAuth. Esto no crea los .mbz: el cron del núcleo los genera en la carpeta «Guardar en» de arriba; esta tarea los toma en orden (por fecha del archivo), sube uno, y solo entonces pasa al siguiente.';
 
 $string['paths_heading'] = 'Rutas y nombres en la nube';

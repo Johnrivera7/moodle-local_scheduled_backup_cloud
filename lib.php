@@ -99,10 +99,10 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     $page->add($oauthstatus);
 
     $connecturl = new moodle_url('/local/scheduled_backup_cloud/oauth_start.php');
-    $oauthconnect = new local_scheduled_backup_cloud_admin_setting_form_description(
+    $oauthconnect = new local_scheduled_backup_cloud_admin_setting_action_button(
         'local_scheduled_backup_cloud/oauth_connect_link',
         get_string('oauth_connect', 'local_scheduled_backup_cloud'),
-        html_writer::link($connecturl, get_string('oauth_connect', 'local_scheduled_backup_cloud'))
+        $connecturl
     );
     $page->add($oauthconnect);
 

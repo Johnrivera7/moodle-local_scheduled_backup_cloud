@@ -77,3 +77,43 @@ class local_scheduled_backup_cloud_admin_setting_form_description extends admin_
         return format_admin_setting($this, $title, $marker . $this->description, '', $haslabel, '', null, $query);
     }
 }
+
+/**
+ * Fila con etiqueta + enlace con apariencia de botón (sin shortname técnico del núcleo).
+ */
+class local_scheduled_backup_cloud_admin_setting_action_button extends admin_setting {
+    /** @var moodle_url */
+    protected $url;
+
+    public function __construct($name, $fieldlabel, moodle_url $url) {
+        $this->nosave = true;
+        $this->url = $url;
+        parent::__construct($name, $fieldlabel, '', '');
+    }
+
+    public function get_setting() {
+        return true;
+    }
+
+    public function get_defaultsetting() {
+        return true;
+    }
+
+    public function write_setting($data) {
+        return '';
+    }
+
+    public function output_html($data, $query = '') {
+        $marker = html_writer::empty_tag('input', [
+            'type' => 'hidden',
+            'name' => $this->get_full_name(),
+            'value' => '1',
+        ]);
+        $lab = html_writer::tag('label', highlightfast($query, $this->visiblename));
+        $left = html_writer::div($lab, 'form-label col-sm-3 text-sm-end');
+        $btn = html_writer::link($this->url, format_string($this->visiblename), ['class' => 'btn btn-primary']);
+        $right = html_writer::div($marker . $btn, 'form-setting col-sm-9');
+
+        return html_writer::div($left . $right, 'form-item row', ['id' => 'admin-' . $this->name]);
+    }
+}
