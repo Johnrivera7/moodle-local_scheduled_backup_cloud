@@ -8,87 +8,21 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Encabezado de sección que se renderiza con format_admin_setting e incluye un input oculto con el
- * nombre del ajuste, para que showhidesettings (hide_if) pueda ocultar toda la fila (.form-item).
- */
-class local_scheduled_backup_cloud_admin_setting_section_heading extends admin_setting {
-
-    public function __construct($name, $heading, $information) {
-        $this->nosave = true;
-        parent::__construct($name, $heading, $information, '');
-    }
-
-    public function get_setting() {
-        return true;
-    }
-
-    public function get_defaultsetting() {
-        return true;
-    }
-
-    public function write_setting($data) {
-        return '';
-    }
-
-    public function output_html($data, $query = '') {
-        $title = highlightfast($query, $this->visiblename);
-        $descformatted = $this->description !== ''
-            ? highlight($query, markdown_to_html($this->description))
-            : '';
-
-        $headinghtml = '';
-        if ((string) $this->visiblename !== '') {
-            $headinghtml = html_writer::tag('h3', $title, ['class' => 'main']);
-        }
-        $box = '';
-        if ($descformatted !== '') {
-            $box = html_writer::div($descformatted, 'box generalbox formsettingheading');
-        }
-
-        $marker = html_writer::empty_tag('input', [
-            'type' => 'hidden',
-            'name' => $this->get_full_name(),
-            'value' => '1',
-        ]);
-
-        // Fila .form-item con name= para showhidesettings; sin format_admin_setting para evitar la columna «shortname».
-        return html_writer::div(
-            $marker . $headinghtml . $box,
-            'form-item row',
-            ['id' => 'admin-' . $this->name]
-        );
-    }
-}
-
-/**
- * Texto / HTML informativo en fila de formulario con el mismo marcador oculto que los encabezados.
- */
-class local_scheduled_backup_cloud_admin_setting_form_description extends admin_setting_description {
-
-    public function output_html($data, $query = '') {
-        $marker = html_writer::empty_tag('input', [
-            'type' => 'hidden',
-            'name' => $this->get_full_name(),
-            'value' => '1',
-        ]);
-        $haslabel = ((string) $this->visiblename !== '');
-        $title = $haslabel ? highlightfast($query, $this->visiblename) : '';
-
-        return format_admin_setting($this, $title, $marker . $this->description, '', $haslabel, '', null, $query);
-    }
-}
-
-/**
  * Extiende «Copia de seguridad programada» (section=automated) con los ajustes de subida a la nube.
  * Los plugins locales se cargan después del núcleo; entonces locate('automated') ya existe.
  *
  * @param admin_root $ADMIN árbol de administración
  */
 function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $ADMIN): void {
+    global $CFG;
+
     static $done = false;
     if ($done) {
         return;
     }
+    require_once($CFG->dirroot . '/lib/adminlib.php');
+    require_once(__DIR__ . '/adminsettings.php');
+
     $page = $ADMIN->locate('automated');
     if (!$page instanceof admin_settingpage) {
         return;
