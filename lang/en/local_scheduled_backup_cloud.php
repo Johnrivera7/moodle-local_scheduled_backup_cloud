@@ -52,7 +52,7 @@ $string['cloud_heading'] = 'Cloud upload';
 $string['cloud_heading_desc'] = 'Enable the upload task, choose provider and OAuth. This does not create .mbz files — core cron generates them in the «Save to» folder above; this task picks them up in stable order (by file time), uploads one file, then moves on.';
 
 $string['paths_heading'] = 'Cloud paths and naming';
-$string['paths_heading_desc'] = '.mbz files are read only from the automated backup «Save to» folder (above). No other local folder is used so files always match what Moodle just generated.';
+$string['paths_heading_desc'] = '.mbz files are read only from the automated backup «Save to» folder on the server. In Scheduled backup, storage must include a specified directory (not course file area only), and that path must match this folder. No other local folder is used.';
 $string['folder_strategy'] = 'Remote folder layout';
 $string['folder_strategy_desc'] = 'How to build folders on the cloud storage.';
 $string['folder_site_shortname'] = 'Site folder / course shortname / file';
@@ -67,6 +67,18 @@ $string['site_folder_slug'] = 'Override site folder name';
 $string['site_folder_slug_desc'] = 'Leave empty to auto-generate from this site\'s wwwroot (safe folder name per Moodle URL).';
 
 $string['task_upload'] = 'Upload course backups to cloud storage';
+
+$string['task_trace_microsoft_pending'] = 'Microsoft / Graph upload is not implemented in this version.';
+$string['task_trace_oauth_incomplete'] = 'OAuth is not fully configured (client ID, secret, or refresh token missing).';
+$string['task_trace_storage_course_only'] = 'Core scheduled backup only stores files in each course backup file area — nothing is copied to a server folder. Set storage to «Specified directory» or «Course backup filearea and specified directory», then set «Save course backups in» to an absolute path on this server (writable by the web/cron user). This plugin only uploads .mbz files from that folder.';
+$string['task_trace_scan_empty'] = 'The automated backup «Save to» path is empty (config backup_auto_destination). Open Site administration → Courses → Backups → Scheduled backup and set a full server path where .mbz files are written.';
+$string['task_trace_scan_not_dir'] = 'The configured scan path is not a directory or is not readable: {$a}';
+$string['task_trace_token_google_failed'] = 'Could not obtain a Google access token (check client ID, secret, and refresh token).';
+$string['task_trace_skipped_duplicate'] = 'Skipped (already uploaded before): {$a}';
+$string['task_trace_remote_folder_failed'] = 'Could not create or resolve the remote folder for: {$a}';
+$string['task_trace_upload_failed'] = 'Upload failed for: {$a}';
+$string['task_trace_delete_skipped'] = 'Safe local delete skipped ({$a->reason}) for {$a->file}';
+$string['task_trace_uploaded'] = 'Uploaded {$a->name} (status: {$a->status})';
 
 $string['after_upload_heading'] = 'After cloud upload';
 $string['after_upload_desc'] = 'Use cloud as the primary backup archive and free disk space on the server.';

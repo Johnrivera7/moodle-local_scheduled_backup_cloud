@@ -39,7 +39,7 @@ class upload_manager {
         }
 
         if ($provider === 'microsoft') {
-            $this->trace->output('local_scheduled_backup_cloud: proveedor Microsoft pendiente de implementación (Graph API).');
+            $this->trace->output(get_string('task_trace_microsoft_pending', 'local_scheduled_backup_cloud'));
             return;
         }
 
@@ -48,20 +48,30 @@ class upload_manager {
         $refresh = (string) get_config('local_scheduled_backup_cloud', 'oauth_refresh_token');
 
         if ($clientid === '' || $secret === '' || $refresh === '') {
-            $this->trace->output('local_scheduled_backup_cloud: configure OAuth (cliente, secreto y token de renovación).');
+            $this->trace->output(get_string('task_trace_oauth_incomplete', 'local_scheduled_backup_cloud'));
+            return;
+        }
+
+        $storage = \local_scheduled_backup_cloud_get_scheduled_backup_storage();
+        if ($storage === 0) {
+            $this->trace->output(get_string('task_trace_storage_course_only', 'local_scheduled_backup_cloud'));
             return;
         }
 
         $scan = \local_scheduled_backup_cloud_resolve_scan_path();
-        if (!$scan || !is_dir($scan)) {
-            $this->trace->output('local_scheduled_backup_cloud: ruta de escaneo no válida: ' . ($scan ?: '(vacía)'));
+        if ($scan === false || $scan === '') {
+            $this->trace->output(get_string('task_trace_scan_empty', 'local_scheduled_backup_cloud'));
+            return;
+        }
+        if (!is_dir($scan)) {
+            $this->trace->output(get_string('task_trace_scan_not_dir', 'local_scheduled_backup_cloud', $scan));
             return;
         }
 
         $uploader = new google_drive_uploader($clientid, $secret, $refresh);
         $access = $uploader->get_access_token();
         if ($access === null) {
-            $this->trace->output('local_scheduled_backup_cloud: no se pudo obtener access_token de Google.');
+            $this->trace->output(get_string('task_trace_token_google_failed', 'local_scheduled_backup_cloud'));
             return;
         }
 
@@ -136,7 +146,7 @@ class upload_manager {
                     'remotepath' => '',
                     'errormessage' => get_string('skipped_duplicate_detail', 'local_scheduled_backup_cloud'),
                 ]);
-                $this->trace->output('local_scheduled_backup_cloud: omitido (ya subido antes): ' . $basename);
+                $this->trace->output(get_string('task_trace_skipped_duplicate', 'local_scheduled_backup_cloud', $basename));
                 continue;
             }
 
@@ -161,7 +171,7 @@ class upload_manager {
                     'remotepath' => implode('/', [$siteslug, $coursefolder, $uploadname]),
                     'errormessage' => get_string('error_remote_folder', 'local_scheduled_backup_cloud'),
                 ]);
-                $this->trace->output('local_scheduled_backup_cloud: no se pudo crear ruta remota para ' . $basename);
+                $this->trace->output(get_string('task_trace_remote_folder_failed', 'local_scheduled_backup_cloud', $basename));
                 continue;
             }
 
@@ -182,7 +192,7 @@ class upload_manager {
                     'remotepath' => $virtualpath,
                     'errormessage' => get_string('error_upload_api', 'local_scheduled_backup_cloud'),
                 ]);
-                $this->trace->output('local_scheduled_backup_cloud: fallo al subir ' . $basename);
+                $this->trace->output(get_string('task_trace_upload_failed', 'local_scheduled_backup_cloud', $basename));
                 continue;
             }
 
@@ -200,7 +210,8 @@ class upload_manager {
                 } else {
                     $status = upload_status::UPLOAD_OK_DELETE_FAILED;
                     $err = get_string('error_delete_local_verify', 'local_scheduled_backup_cloud');
-                    $this->trace->output('local_scheduled_backup_cloud: borrado seguro omitido (' . $deleteres['reason'] . ') para ' . $basename);
+                    $this->trace->output(get_string('task_trace_delete_skipped', 'local_scheduled_backup_cloud',
+                        (object)['reason' => $deleteres['reason'], 'file' => $basename]));
                 }
             }
 
@@ -218,7 +229,8 @@ class upload_manager {
                 'errormessage' => $err,
             ]);
 
-            $this->trace->output('local_scheduled_backup_cloud: subido ' . $uploadname . ' (' . $status . ')');
+            $this->trace->output(get_string('task_trace_uploaded', 'local_scheduled_backup_cloud',
+                (object)['name' => $uploadname, 'status' => $status]));
         }
     }
 

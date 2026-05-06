@@ -52,7 +52,7 @@ $string['cloud_heading'] = 'Subida a la nube';
 $string['cloud_heading_desc'] = 'Active la tarea de subida, elija proveedor y OAuth. Esto no crea los .mbz: el cron del núcleo los genera en la carpeta «Guardar en» de arriba; esta tarea los toma en orden (por fecha del archivo), sube uno, y solo entonces pasa al siguiente.';
 
 $string['paths_heading'] = 'Rutas y nombres en la nube';
-$string['paths_heading_desc'] = 'Los archivos .mbz se buscan solo en la carpeta «Guardar en» del respaldo automático (arriba). No se usa otra ruta local: así coincide siempre con lo que Moodle acaba de generar.';
+$string['paths_heading_desc'] = 'Los .mbz se leen solo de la carpeta «Guardar en» del respaldo automático en el servidor. En Copia de seguridad programada, el almacenamiento debe incluir un directorio (no solo el área de archivos del curso) y esa ruta debe ser la misma. No se usa otra carpeta local.';
 $string['folder_strategy'] = 'Estructura de carpetas remotas';
 $string['folder_strategy_desc'] = 'Cómo organizar carpetas en el almacenamiento en la nube.';
 $string['folder_site_shortname'] = 'Carpeta del sitio / shortname del curso / archivo';
@@ -67,6 +67,18 @@ $string['site_folder_slug'] = 'Nombre de carpeta del sitio (opcional)';
 $string['site_folder_slug_desc'] = 'Vacío para generar automáticamente desde wwwroot (nombre seguro por URL de Moodle).';
 
 $string['task_upload'] = 'Subir respaldos de curso al almacenamiento en la nube';
+
+$string['task_trace_microsoft_pending'] = 'La subida Microsoft / Graph no está implementada en esta versión.';
+$string['task_trace_oauth_incomplete'] = 'OAuth incompleto (falta ID de cliente, secreto o token de renovación).';
+$string['task_trace_storage_course_only'] = 'La Copia de seguridad programada del núcleo está configurada para guardar solo en el área de respaldos de cada curso; no copia archivos a una carpeta del servidor. Cambie el almacenamiento a «Directorio especificado» o «Área del curso y directorio especificado» y en «Guardar copias de seguridad de los cursos en» indique una ruta absoluta en este servidor (escribible por el usuario web/cron). Este plugin solo sube .mbz desde esa carpeta.';
+$string['task_trace_scan_empty'] = 'La ruta «Guardar en» del respaldo automático está vacía (backup_auto_destination). En Administración del sitio → Cursos → Copias de seguridad → Copia de seguridad programada indique la ruta completa donde el núcleo escribe los .mbz.';
+$string['task_trace_scan_not_dir'] = 'La ruta configurada no es un directorio accesible o no se puede leer: {$a}';
+$string['task_trace_token_google_failed'] = 'No se pudo obtener access_token de Google (revise ID, secreto y token de renovación).';
+$string['task_trace_skipped_duplicate'] = 'Omitido (ya estaba subido): {$a}';
+$string['task_trace_remote_folder_failed'] = 'No se pudo crear o resolver la carpeta remota para: {$a}';
+$string['task_trace_upload_failed'] = 'Fallo al subir: {$a}';
+$string['task_trace_delete_skipped'] = 'Borrado local seguro omitido ({$a->reason}) para {$a->file}';
+$string['task_trace_uploaded'] = 'Subido {$a->name} (estado: {$a->status})';
 
 $string['after_upload_heading'] = 'Tras subir a la nube';
 $string['after_upload_desc'] = 'Para usar la nube como archivo principal de respaldos y liberar espacio en el servidor.';

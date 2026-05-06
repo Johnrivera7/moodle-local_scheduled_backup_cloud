@@ -219,7 +219,8 @@ function local_scheduled_backup_cloud_get_site_folder_slug(): string {
 }
 
 /**
- * Carpeta local donde el respaldo automático del núcleo guarda los .mbz (siempre backup_auto_destination).
+ * Carpeta local donde el respaldo automático del núcleo copia los .mbz (backup_auto_destination).
+ * Solo se usa si el almacenamiento incluye directorio (no solo área del curso).
  *
  * @return string|false ruta absoluta o false
  */
@@ -230,6 +231,19 @@ function local_scheduled_backup_cloud_resolve_scan_path() {
     }
     $dest = trim($dest);
     return $dest !== '' ? $dest : false;
+}
+
+/**
+ * Modo de almacenamiento del respaldo programado del núcleo (backup_auto_storage).
+ *
+ * @return int 0 = solo área del curso; 1 = carpeta; 2 = ambos
+ */
+function local_scheduled_backup_cloud_get_scheduled_backup_storage(): int {
+    $v = get_config('backup', 'backup_auto_storage');
+    if ($v === null || $v === '') {
+        return 0;
+    }
+    return (int) $v;
 }
 
 /**
