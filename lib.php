@@ -8,6 +8,77 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
+ * Encabezado de sección que se renderiza con format_admin_setting e incluye un input oculto con el
+ * nombre del ajuste, para que showhidesettings (hide_if) pueda ocultar toda la fila (.form-item).
+ */
+class local_scheduled_backup_cloud_admin_setting_section_heading extends admin_setting {
+
+    public function __construct($name, $heading, $information) {
+        $this->nosave = true;
+        parent::__construct($name, $heading, $information, '');
+    }
+
+    public function get_setting() {
+        return true;
+    }
+
+    public function get_defaultsetting() {
+        return true;
+    }
+
+    public function write_setting($data) {
+        return '';
+    }
+
+    public function output_html($data, $query = '') {
+        $title = highlightfast($query, $this->visiblename);
+        $descformatted = $this->description !== ''
+            ? highlight($query, markdown_to_html($this->description))
+            : '';
+
+        $headinghtml = '';
+        if ((string) $this->visiblename !== '') {
+            $headinghtml = html_writer::tag('h3', $title, ['class' => 'main']);
+        }
+        $box = '';
+        if ($descformatted !== '') {
+            $box = html_writer::div($descformatted, 'box generalbox formsettingheading');
+        }
+
+        $marker = html_writer::empty_tag('input', [
+            'type' => 'hidden',
+            'name' => $this->get_full_name(),
+            'value' => '1',
+        ]);
+
+        // Fila .form-item con name= para showhidesettings; sin format_admin_setting para evitar la columna «shortname».
+        return html_writer::div(
+            $marker . $headinghtml . $box,
+            'form-item row',
+            ['id' => 'admin-' . $this->name]
+        );
+    }
+}
+
+/**
+ * Texto / HTML informativo en fila de formulario con el mismo marcador oculto que los encabezados.
+ */
+class local_scheduled_backup_cloud_admin_setting_form_description extends admin_setting_description {
+
+    public function output_html($data, $query = '') {
+        $marker = html_writer::empty_tag('input', [
+            'type' => 'hidden',
+            'name' => $this->get_full_name(),
+            'value' => '1',
+        ]);
+        $haslabel = ((string) $this->visiblename !== '');
+        $title = $haslabel ? highlightfast($query, $this->visiblename) : '';
+
+        return format_admin_setting($this, $title, $marker . $this->description, '', $haslabel, '', null, $query);
+    }
+}
+
+/**
  * Extiende «Copia de seguridad programada» (section=automated) con los ajustes de subida a la nube.
  * Los plugins locales se cargan después del núcleo; entonces locate('automated') ya existe.
  *
@@ -24,7 +95,7 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     }
     $done = true;
 
-    $page->add(new admin_setting_heading(
+    $page->add(new local_scheduled_backup_cloud_admin_setting_section_heading(
         'local_scheduled_backup_cloud/automated_hook_heading',
         get_string('automated_cloud_section_heading', 'local_scheduled_backup_cloud'),
         get_string('automated_cloud_section_desc', 'local_scheduled_backup_cloud')
@@ -50,7 +121,7 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     );
     $page->add($provider);
 
-    $oauthheading = new admin_setting_heading(
+    $oauthheading = new local_scheduled_backup_cloud_admin_setting_section_heading(
         'local_scheduled_backup_cloud/oauth',
         get_string('oauth_heading', 'local_scheduled_backup_cloud'),
         get_string('oauth_intro', 'local_scheduled_backup_cloud')
@@ -58,7 +129,7 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     $page->add($oauthheading);
 
     $redirect = new moodle_url('/local/scheduled_backup_cloud/oauth_callback.php');
-    $oauthredirect = new admin_setting_description(
+    $oauthredirect = new local_scheduled_backup_cloud_admin_setting_form_description(
         'local_scheduled_backup_cloud/oauth_redirect_desc',
         get_string('oauth_redirect', 'local_scheduled_backup_cloud'),
         html_writer::tag('code', $redirect->out(false))
@@ -86,7 +157,7 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     $tokmsg = (is_string($refresh) && $refresh !== '')
         ? get_string('oauth_connected', 'local_scheduled_backup_cloud')
         : get_string('oauth_not_connected', 'local_scheduled_backup_cloud');
-    $oauthstatus = new admin_setting_description(
+    $oauthstatus = new local_scheduled_backup_cloud_admin_setting_form_description(
         'local_scheduled_backup_cloud/oauth_status',
         '',
         $tokmsg
@@ -94,14 +165,14 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     $page->add($oauthstatus);
 
     $connecturl = new moodle_url('/local/scheduled_backup_cloud/oauth_start.php');
-    $oauthconnect = new admin_setting_description(
+    $oauthconnect = new local_scheduled_backup_cloud_admin_setting_form_description(
         'local_scheduled_backup_cloud/oauth_connect_link',
         get_string('oauth_connect', 'local_scheduled_backup_cloud'),
         html_writer::link($connecturl, get_string('oauth_connect', 'local_scheduled_backup_cloud'))
     );
     $page->add($oauthconnect);
 
-    $pathsheading = new admin_setting_heading(
+    $pathsheading = new local_scheduled_backup_cloud_admin_setting_section_heading(
         'local_scheduled_backup_cloud/paths',
         get_string('paths_heading', 'local_scheduled_backup_cloud'),
         get_string('paths_heading_desc', 'local_scheduled_backup_cloud')
@@ -129,7 +200,7 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     );
     $page->add($folderstrategy);
 
-    $filenamepreview = new admin_setting_description(
+    $filenamepreview = new local_scheduled_backup_cloud_admin_setting_form_description(
         'local_scheduled_backup_cloud/filename_preview',
         get_string('filename_preview_heading', 'local_scheduled_backup_cloud'),
         get_string('filename_pattern_fixed_desc', 'local_scheduled_backup_cloud') . html_writer::empty_tag('br') .
@@ -137,7 +208,7 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     );
     $page->add($filenamepreview);
 
-    $afterheading = new admin_setting_heading(
+    $afterheading = new local_scheduled_backup_cloud_admin_setting_section_heading(
         'local_scheduled_backup_cloud/after_upload',
         get_string('after_upload_heading', 'local_scheduled_backup_cloud'),
         get_string('after_upload_desc', 'local_scheduled_backup_cloud')
@@ -153,7 +224,7 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     $page->add($deletelocal);
 
     $settingsurl = new moodle_url('/admin/settings.php', ['section' => 'local_scheduled_backup_cloud']);
-    $openplugin = new admin_setting_description(
+    $openplugin = new local_scheduled_backup_cloud_admin_setting_form_description(
         'local_scheduled_backup_cloud/automated_hook_link',
         '',
         html_writer::link($settingsurl, get_string('automated_cloud_open_settings', 'local_scheduled_backup_cloud'))
