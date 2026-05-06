@@ -6,6 +6,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once($CFG->libdir . '/filelib.php');
 
 require_login();
 require_capability('local/scheduled_backup_cloud:configure', \context_system::instance());
