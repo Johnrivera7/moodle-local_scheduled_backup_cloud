@@ -7,6 +7,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
+
 require_once(__DIR__ . '/lib.php');
 
 if ($hassiteconfig) {
@@ -20,11 +22,15 @@ if ($hassiteconfig) {
         get_string('plugindesc', 'local_scheduled_backup_cloud')
     ));
 
+    require_once($CFG->dirroot . '/lib/adminlib.php');
+    require_once(__DIR__ . '/adminsettings.php');
+
     $linkreport = new moodle_url('/local/scheduled_backup_cloud/report.php');
-    $settings->add(new admin_setting_description(
+    $settings->add(new local_scheduled_backup_cloud_admin_setting_action_button(
         'local_scheduled_backup_cloud/report_link_desc',
         get_string('report_title', 'local_scheduled_backup_cloud'),
-        html_writer::link($linkreport, get_string('report_open', 'local_scheduled_backup_cloud'))
+        $linkreport,
+        get_string('report_open', 'local_scheduled_backup_cloud')
     ));
 
     // Aparece en Administración del sitio → Cursos → Copias de seguridad (junto a «Copia de seguridad programada», etc.).
