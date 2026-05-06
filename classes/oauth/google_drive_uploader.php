@@ -164,4 +164,37 @@ class google_drive_uploader {
         $data = json_decode($resp, true);
         return is_array($data) && !empty($data['id']);
     }
+
+    /**
+     * Comprueba token y acceso a Drive (about).
+     *
+     * @return array{ok:bool, email?:string, errormessage?:string}
+     */
+    public function test_drive_connection(): array {
+        $access = $this->get_access_token();
+        if ($access === null || $access === '') {
+            return ['ok' => false, 'errormessage' => 'refresh_failed'];
+        }
+
+        $curl = new \curl();
+        $curl->setHeader('Authorization: Bearer ' . $access);
+        $abouturl = 'https://www.googleapis.com/drive/v3/about?' . http_build_query([
+            'fields' => 'user(emailAddress,displayName)',
+        ]);
+        $response = $curl->get($abouturl);
+        $json = json_decode($response, true);
+        if (is_array($json) && !empty($json['user']['emailAddress'])) {
+            return ['ok' => true, 'email' => (string) $json['user']['emailAddress']];
+        }
+        if (is_array($json) && isset($json['error'])) {
+            $e = $json['error'];
+            if (is_array($e)) {
+                $msg = isset($e['message']) ? (string) $e['message'] : 'api_error';
+            } else {
+                $msg = (string) $e;
+            }
+            return ['ok' => false, 'errormessage' => $msg];
+        }
+        return ['ok' => false, 'errormessage' => 'bad_response'];
+    }
 }

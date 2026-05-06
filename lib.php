@@ -106,6 +106,16 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     );
     $page->add($oauthconnect);
 
+    $testurl = new moodle_url('/local/scheduled_backup_cloud/oauth_test.php', ['sesskey' => sesskey()]);
+    $oauthtest = new local_scheduled_backup_cloud_admin_setting_action_button(
+        'local_scheduled_backup_cloud/oauth_test_link',
+        get_string('oauth_test_connection', 'local_scheduled_backup_cloud'),
+        $testurl,
+        get_string('oauth_test_connection', 'local_scheduled_backup_cloud'),
+        'btn btn-secondary'
+    );
+    $page->add($oauthtest);
+
     $pathsheading = new local_scheduled_backup_cloud_admin_setting_section_heading(
         'local_scheduled_backup_cloud/paths',
         get_string('paths_heading', 'local_scheduled_backup_cloud'),
@@ -175,6 +185,7 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
     $page->hide_if('local_scheduled_backup_cloud/clientsecret', $dependenton, 'notchecked');
     $page->hide_if('local_scheduled_backup_cloud/oauth_status', $dependenton, 'notchecked');
     $page->hide_if('local_scheduled_backup_cloud/oauth_connect_link', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/oauth_test_link', $dependenton, 'notchecked');
     $page->hide_if('local_scheduled_backup_cloud/paths', $dependenton, 'notchecked');
     $page->hide_if('local_scheduled_backup_cloud/site_folder_slug', $dependenton, 'notchecked');
     $page->hide_if('local_scheduled_backup_cloud/folder_strategy', $dependenton, 'notchecked');

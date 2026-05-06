@@ -29,6 +29,21 @@ $string['oauth_not_connected'] = 'Sin conexión. Guarde ID y secreto y pulse «C
 $string['tokens_encrypted'] = 'Tokens almacenados (cifrados)';
 $string['tokens_encrypted_desc'] = 'Déjelo vacío salvo restauración desde copia. La conexión escribe aquí automáticamente.';
 
+$string['oauth_success_connected'] = 'Cuenta de Google vinculada. Se guardó el token de renovación; las subidas programadas podrán usar Drive.';
+$string['oauth_redirect_error'] = 'No se completó el inicio de sesión con Google: {$a}';
+$string['oauth_token_invalid_response'] = 'Respuesta no válida de Google al canjear el código de autorización.';
+$string['oauth_token_error'] = 'No se pudieron obtener los tokens: {$a}';
+$string['oauth_warning_no_refresh'] = 'No se recibió token de renovación. Revoca el acceso de la app en tu cuenta de Google, vuelve a conectar y acepta todos los permisos (consentimiento inicial).';
+
+$string['oauth_test_connection'] = 'Probar conexión';
+$string['oauth_test_success'] = 'Conexión correcta. Sesión en Google Drive como {$a}.';
+$string['oauth_test_failed_detail'] = 'Fallo al probar la conexión: {$a}';
+$string['oauth_test_refresh_failed'] = 'No se pudo renovar el acceso. Compruebe ID y secreto de cliente y que exista un token de renovación guardado.';
+$string['oauth_test_bad_response'] = 'La API de Drive devolvió una respuesta inesperada.';
+$string['oauth_test_no_token'] = 'Aún no hay token de renovación guardado. Use «Conectar cuenta» primero y luego pruebe de nuevo.';
+$string['oauth_test_missing_credentials'] = 'Guarde el ID y el secreto de cliente antes de probar la conexión.';
+$string['oauth_test_provider_google_only'] = 'En esta versión la prueba de conexión solo está disponible para Google Drive.';
+
 $string['automated_cloud_section_heading'] = 'Subida a la nube';
 $string['automated_cloud_section_desc'] = 'OAuth, carpetas en la nube y opciones de subida están en la página enlazada. Los controles anteriores son solo la copia de seguridad programada del núcleo.';
 $string['automated_cloud_open_settings'] = 'Abrir ajustes de subida a la nube';

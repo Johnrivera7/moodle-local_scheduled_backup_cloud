@@ -11,13 +11,19 @@ require_once($CFG->libdir . '/filelib.php');
 require_login();
 require_capability('local/scheduled_backup_cloud:configure', \context_system::instance());
 
-$code = optional_param('code', '', PARAM_RAW);
-$state = optional_param('state', '', PARAM_RAW);
-$error = optional_param('error', '', PARAM_ALPHAEXT);
-
 $settingsurl = new moodle_url('/admin/settings.php', ['section' => 'local_scheduled_backup_cloud']);
 
+$error = optional_param('error', '', PARAM_RAW);
+$errordescription = optional_param('error_description', '', PARAM_RAW_TRIMMED);
+$code = optional_param('code', '', PARAM_RAW);
+$state = optional_param('state', '', PARAM_RAW);
+
 if ($error !== '') {
+    $msg = $error;
+    if ($errordescription !== '') {
+        $msg .= ': ' . $errordescription;
+    }
+    \core\notification::warning(get_string('oauth_redirect_error', 'local_scheduled_backup_cloud', $msg));
     redirect($settingsurl);
 }
 
@@ -45,13 +51,27 @@ $curl = new curl();
 $response = $curl->post('https://oauth2.googleapis.com/token', $params);
 $data = json_decode($response, true);
 
-if (is_array($data) && !empty($data['refresh_token'])) {
+if (!is_array($data)) {
+    \core\notification::error(get_string('oauth_token_invalid_response', 'local_scheduled_backup_cloud'));
+    redirect($settingsurl);
+}
+
+if (!empty($data['error'])) {
+    $msg = $data['error'];
+    if (!empty($data['error_description'])) {
+        $msg .= ': ' . $data['error_description'];
+    }
+    \core\notification::error(get_string('oauth_token_error', 'local_scheduled_backup_cloud', $msg));
+    redirect($settingsurl);
+}
+
+if (!empty($data['refresh_token'])) {
     set_config('oauth_refresh_token', $data['refresh_token'], 'local_scheduled_backup_cloud');
-} else if (is_array($data) && !empty($data['access_token'])) {
-    // Sin refresh_token (re-autorización parcial); mantener token anterior si existe.
-    \core\notification::warning('No se recibió refresh_token; vuelva a conectar con consentimiento.');
+    \core\notification::success(get_string('oauth_success_connected', 'local_scheduled_backup_cloud'));
+} else if (!empty($data['access_token'])) {
+    \core\notification::warning(get_string('oauth_warning_no_refresh', 'local_scheduled_backup_cloud'));
 } else {
-    \core\notification::error('Respuesta OAuth inválida.');
+    \core\notification::error(get_string('oauth_token_invalid_response', 'local_scheduled_backup_cloud'));
 }
 
 redirect($settingsurl);

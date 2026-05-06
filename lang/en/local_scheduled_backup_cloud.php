@@ -29,6 +29,21 @@ $string['oauth_not_connected'] = 'Not connected. Save client ID and secret, then
 $string['tokens_encrypted'] = 'Stored tokens (encrypted)';
 $string['tokens_encrypted_desc'] = 'Leave blank unless restoring from backup. Connection writes here automatically.';
 
+$string['oauth_success_connected'] = 'Google account connected. The refresh token was saved; scheduled uploads can use Drive.';
+$string['oauth_redirect_error'] = 'Google sign-in was not completed: {$a}';
+$string['oauth_token_invalid_response'] = 'Invalid response from Google while exchanging the authorization code.';
+$string['oauth_token_error'] = 'Could not obtain tokens: {$a}';
+$string['oauth_warning_no_refresh'] = 'No refresh token was returned. Revoke the app access in your Google account, then connect again and accept all permissions (first-time consent).';
+
+$string['oauth_test_connection'] = 'Test connection';
+$string['oauth_test_success'] = 'Connection OK. Signed in to Google Drive as {$a}.';
+$string['oauth_test_failed_detail'] = 'Connection test failed: {$a}';
+$string['oauth_test_refresh_failed'] = 'Could not refresh the access token. Check the client ID, secret, and that a refresh token is stored.';
+$string['oauth_test_bad_response'] = 'Drive API returned an unexpected response.';
+$string['oauth_test_no_token'] = 'No refresh token is stored yet. Connect your Google account first (Connect account), then test again.';
+$string['oauth_test_missing_credentials'] = 'Save the client ID and client secret before testing the connection.';
+$string['oauth_test_provider_google_only'] = 'Connection test is only available for Google Drive in this version.';
+
 $string['automated_cloud_section_heading'] = 'Cloud upload';
 $string['automated_cloud_section_desc'] = 'OAuth, remote folders, and upload options are on the linked page. The controls above are core Scheduled backup only.';
 $string['automated_cloud_open_settings'] = 'Open cloud upload settings';

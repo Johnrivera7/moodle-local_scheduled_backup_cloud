@@ -86,14 +86,19 @@ class local_scheduled_backup_cloud_admin_setting_action_button extends admin_set
     protected $url;
     /** @var string texto del enlace-boton (si vacío, se usa la etiqueta de campo) */
     protected $buttonlabel;
+    /** @var string clases CSS del enlace (ej. btn btn-secondary) */
+    protected $buttonclass;
 
     /**
      * @param string|null $buttonlabel texto del botón; null = mismo que $fieldlabel
+     * @param string $buttonclass clases del botón Bootstrap
      */
-    public function __construct($name, $fieldlabel, moodle_url $url, ?string $buttonlabel = null) {
+    public function __construct($name, $fieldlabel, moodle_url $url, ?string $buttonlabel = null,
+            string $buttonclass = 'btn btn-primary') {
         $this->nosave = true;
         $this->url = $url;
         $this->buttonlabel = $buttonlabel ?? $fieldlabel;
+        $this->buttonclass = $buttonclass;
         parent::__construct($name, $fieldlabel, '', '');
     }
 
@@ -117,7 +122,7 @@ class local_scheduled_backup_cloud_admin_setting_action_button extends admin_set
         ]);
         $lab = html_writer::tag('label', highlightfast($query, $this->visiblename));
         $left = html_writer::div($lab, 'form-label col-sm-3 text-sm-end');
-        $btn = html_writer::link($this->url, format_string($this->buttonlabel), ['class' => 'btn btn-primary']);
+        $btn = html_writer::link($this->url, format_string($this->buttonlabel), ['class' => $this->buttonclass]);
         $right = html_writer::div($marker . $btn, 'form-setting col-sm-9');
 
         return html_writer::div($left . $right, 'form-item row', ['id' => 'admin-' . $this->name]);
