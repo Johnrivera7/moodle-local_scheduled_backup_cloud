@@ -11,7 +11,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026050601;
+$plugin->version   = 2026050602;
 $plugin->requires  = 2024100700; // Moodle 4.5+.
 $plugin->component = 'local_scheduled_backup_cloud';
 $plugin->release   = '1.0.0';

@@ -30,10 +30,8 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         get_string('automated_cloud_section_desc', 'local_scheduled_backup_cloud')
     ));
 
-    $dependson = 'local_scheduled_backup_cloud/enabled';
-
     $enabled = new admin_setting_configcheckbox(
-        $dependson,
+        'local_scheduled_backup_cloud/enabled',
         get_string('enabled', 'local_scheduled_backup_cloud'),
         get_string('enabled_desc', 'local_scheduled_backup_cloud'),
         0
@@ -50,7 +48,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
             'microsoft' => get_string('provider_microsoft', 'local_scheduled_backup_cloud'),
         ]
     );
-    $provider->add_dependent_on($dependson);
     $page->add($provider);
 
     $oauthheading = new admin_setting_heading(
@@ -58,7 +55,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         get_string('oauth_heading', 'local_scheduled_backup_cloud'),
         get_string('oauth_intro', 'local_scheduled_backup_cloud')
     );
-    $oauthheading->add_dependent_on($dependson);
     $page->add($oauthheading);
 
     $redirect = new moodle_url('/local/scheduled_backup_cloud/oauth_callback.php');
@@ -67,7 +63,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         get_string('oauth_redirect', 'local_scheduled_backup_cloud'),
         html_writer::tag('code', $redirect->out(false))
     );
-    $oauthredirect->add_dependent_on($dependson);
     $page->add($oauthredirect);
 
     $clientid = new admin_setting_configtext(
@@ -77,7 +72,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         '',
         PARAM_RAW
     );
-    $clientid->add_dependent_on($dependson);
     $page->add($clientid);
 
     $clientsecret = new admin_setting_configpasswordunmask(
@@ -86,7 +80,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         '',
         ''
     );
-    $clientsecret->add_dependent_on($dependson);
     $page->add($clientsecret);
 
     $refresh = get_config('local_scheduled_backup_cloud', 'oauth_refresh_token');
@@ -98,7 +91,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         '',
         $tokmsg
     );
-    $oauthstatus->add_dependent_on($dependson);
     $page->add($oauthstatus);
 
     $connecturl = new moodle_url('/local/scheduled_backup_cloud/oauth_start.php');
@@ -107,7 +99,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         get_string('oauth_connect', 'local_scheduled_backup_cloud'),
         html_writer::link($connecturl, get_string('oauth_connect', 'local_scheduled_backup_cloud'))
     );
-    $oauthconnect->add_dependent_on($dependson);
     $page->add($oauthconnect);
 
     $pathsheading = new admin_setting_heading(
@@ -115,7 +106,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         get_string('paths_heading', 'local_scheduled_backup_cloud'),
         get_string('paths_heading_desc', 'local_scheduled_backup_cloud')
     );
-    $pathsheading->add_dependent_on($dependson);
     $page->add($pathsheading);
 
     $sitefolderslug = new admin_setting_configtext(
@@ -125,7 +115,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         '',
         PARAM_TEXT
     );
-    $sitefolderslug->add_dependent_on($dependson);
     $page->add($sitefolderslug);
 
     $folderstrategy = new admin_setting_configselect(
@@ -138,7 +127,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
             'site_idnumber' => get_string('folder_site_idnumber', 'local_scheduled_backup_cloud'),
         ]
     );
-    $folderstrategy->add_dependent_on($dependson);
     $page->add($folderstrategy);
 
     $filenamepreview = new admin_setting_description(
@@ -147,7 +135,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         get_string('filename_pattern_fixed_desc', 'local_scheduled_backup_cloud') . html_writer::empty_tag('br') .
         local_scheduled_backup_cloud_get_filename_preview_html()
     );
-    $filenamepreview->add_dependent_on($dependson);
     $page->add($filenamepreview);
 
     $afterheading = new admin_setting_heading(
@@ -155,7 +142,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         get_string('after_upload_heading', 'local_scheduled_backup_cloud'),
         get_string('after_upload_desc', 'local_scheduled_backup_cloud')
     );
-    $afterheading->add_dependent_on($dependson);
     $page->add($afterheading);
 
     $deletelocal = new admin_setting_configcheckbox(
@@ -164,7 +150,6 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         get_string('delete_local_after_upload_desc', 'local_scheduled_backup_cloud'),
         1
     );
-    $deletelocal->add_dependent_on($dependson);
     $page->add($deletelocal);
 
     $settingsurl = new moodle_url('/admin/settings.php', ['section' => 'local_scheduled_backup_cloud']);
@@ -173,8 +158,25 @@ function local_scheduled_backup_cloud_extend_scheduled_backup_page(admin_root $A
         '',
         html_writer::link($settingsurl, get_string('automated_cloud_open_settings', 'local_scheduled_backup_cloud'))
     );
-    $openplugin->add_dependent_on($dependson);
     $page->add($openplugin);
+
+    // Hide/show instantly (client-side) based on the enabled checkbox.
+    // This uses the same dependency system as core admin settings.
+    $dependenton = 'local_scheduled_backup_cloud/enabled';
+    $page->hide_if('local_scheduled_backup_cloud/provider', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/oauth', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/oauth_redirect_desc', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/clientid', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/clientsecret', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/oauth_status', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/oauth_connect_link', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/paths', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/site_folder_slug', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/folder_strategy', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/filename_preview', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/after_upload', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/delete_local_after_upload', $dependenton, 'notchecked');
+    $page->hide_if('local_scheduled_backup_cloud/automated_hook_link', $dependenton, 'notchecked');
 }
 
 /**
